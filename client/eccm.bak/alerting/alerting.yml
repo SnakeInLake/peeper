@@ -1,0 +1,223 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: eltex_alerts
+    folder: Alerts
+    interval: 20s
+    rules:
+      - uid: c51ae226-568d-4824-b5cd-52610b582217
+        title: Used RAM is too much
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: PF75C52D90C771BE5
+            model:
+              datasource:
+                  type: prometheus
+                  uid: PF75C52D90C771BE5
+              editorMode: code
+              exemplar: false
+              expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+              instant: false
+              interval: ""
+              intervalMs: 15000
+              legendFormat: RAM used
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                  - evaluator:
+                      params:
+                          - 90
+                          - 0
+                      type: gt
+                    operator:
+                      type: and
+                    query:
+                      params:
+                          - A
+                    reducer:
+                      params: []
+                      type: last
+                    type: query
+              datasource:
+                  name: Expression
+                  type: __expr__
+                  uid: __expr__
+              expression: ""
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: B
+              type: classic_conditions
+        dashboardUid: rYdddlPWk
+        panelId: 325
+        noDataState: NoData
+        execErrState: Error
+        for: 3m
+        annotations:
+          __dashboardUid__: rYdddlPWk
+          __panelId__: "325"
+          description: Событие создается, когда RAM занята более чем на 90%.
+          summary: Более 90% RAM занято.
+        labels:
+          org: eltex
+        isPaused: false
+      - uid: a6e32492-2868-44bb-b832-8cc20ffc165c
+        title: Used RootFS is too much
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 86400
+              to: 0
+            datasourceUid: PF75C52D90C771BE5
+            model:
+              datasource:
+                  type: prometheus
+                  uid: PF75C52D90C771BE5
+              editorMode: code
+              expr: (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100
+              interval: ""
+              intervalMs: 15000
+              legendFormat: mountpoint = "{{mountpoint}}"
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              conditions:
+                  - evaluator:
+                      params:
+                          - 90
+                          - 0
+                      type: gt
+                    operator:
+                      type: and
+                    query:
+                      params:
+                          - A
+                    reducer:
+                      params: []
+                      type: last
+                    type: query
+              datasource:
+                  name: Expression
+                  type: __expr__
+                  uid: __expr__
+              expression: ""
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: B
+              type: classic_conditions
+        dashboardUid: rYdddlPWk
+        panelId: 326
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          __dashboardUid__: rYdddlPWk
+          __panelId__: "326"
+          description: Событие создается, когда корень файловой системы занят более чем на 90%.
+          summary: Более 90% корня файловой системы занято.
+        labels:
+          org: eltex
+        isPaused: false
+      - uid: ecf4803f-5a2d-4e6f-bac5-33bb90129749
+        title: Service down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PF75C52D90C771BE5
+            model:
+              editorMode: code
+              expr: up
+              hide: false
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: true
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                  - evaluator:
+                      params:
+                          - 0
+                          - 0
+                      type: gt
+                    operator:
+                      type: and
+                    query:
+                      params: []
+                    reducer:
+                      params: []
+                      type: avg
+                    type: query
+              datasource:
+                  name: Expression
+                  type: __expr__
+                  uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              settings:
+                  mode: ""
+              type: reduce
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                  - evaluator:
+                      params:
+                          - 1
+                          - 0
+                      type: lt
+                    operator:
+                      type: and
+                    query:
+                      params: []
+                    reducer:
+                      params: []
+                      type: avg
+                    type: query
+              datasource:
+                  name: Expression
+                  type: __expr__
+                  uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        dashboardUid: e41gE9M7k
+        panelId: 4
+        noDataState: NoData
+        execErrState: Error
+        for: 20s
+        annotations:
+          __dashboardUid__: e41gE9M7k
+          __panelId__: "4"
+          description: Событие возникает, когда какой-либо сервис переходит в состоянии DOWN.
+          summary: Сервис {{ index $labels "job" }} находится в состоянии DOWN.
+        labels:
+          org: eltex
+        isPaused: false

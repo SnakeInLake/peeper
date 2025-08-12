@@ -1,0 +1,18 @@
+---
+- job_name: "docker"
+  docker_sd_configs:
+    - host: "unix://%{DOCKER_SOCKET}"
+  relabel_configs:
+    - source_labels: [ "__meta_docker_container_label_ru_eltex_co_metrics_job" ]
+      regex: ".+"
+      action: "keep"
+    - source_labels: [ "__meta_docker_container_name" ]
+      target_label: "container"
+      regex: "/?(.+)"
+    - source_labels: [ "__meta_docker_network_ip", "__meta_docker_container_label_ru_eltex_co_metrics_port" ]
+      separator: ":"
+      target_label: "__address__"
+    - source_labels: [ "__meta_docker_container_label_ru_eltex_co_metrics_path" ]
+      target_label: "__metrics_path__"
+    - regex: "__meta_docker_container_label_ru_eltex_co_metrics_(.+)"
+      action: "labelmap"

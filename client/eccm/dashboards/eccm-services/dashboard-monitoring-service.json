@@ -1,0 +1,4002 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "Dashboard",
+  "metadata": {
+    "folder": "eccm-services",
+    "name": "monitoring-service"
+  },
+  "spec": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations \u0026 Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 2,
+    "links": [],
+    "panels": [
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 18,
+        "panels": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает, сколько времени сервис работает без перезапуска. Высокое значение указывает на надежную и непрерывную работу.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "decimals": 1,
+                "mappings": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 0,
+              "y": 1
+            },
+            "id": 19,
+            "maxDataPoints": 100,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "horizontal",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "text": {
+                "valueSize": 50
+              },
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "process_uptime_seconds{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Uptime",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Процент используемой heap-памяти JVM для приложения monitoring-service",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "decimals": 1,
+                "mappings": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 70
+                    },
+                    {
+                      "color": "dark-orange",
+                      "value": 80
+                    },
+                    {
+                      "color": "dark-red",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percentunit"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 3,
+              "y": 1
+            },
+            "id": 24,
+            "maxDataPoints": 100,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "horizontal",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "text": {
+                "valueSize": 50
+              },
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(jvm_memory_used_bytes{host=\"$host\", area=\"heap\", instance=\"$instance\"}) / sum(jvm_memory_max_bytes{host=\"$host\", area=\"heap\", instance=~\"$instance\"})",
+                "legendFormat": "",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Heap used",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "График изменения процента использования процессора приложением monitoring-service",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "percentunit"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 6,
+              "y": 1
+            },
+            "id": 20,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "system_cpu_usage{host=\"$host\", instance=\"$instance\"}",
+                "hide": false,
+                "legendFormat": "Process (5m)",
+                "range": true,
+                "refId": "C"
+              }
+            ],
+            "title": "CPU Usage (5m)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "График показывает  использование heap-памяти JVM приложением monitoring-service.\n\nИспользуемая память (Used) — текущий объём занятой heap-памяти\n\nВыделенная память (Committed) — объём памяти, зарезервированный JVM для heap\n\nМаксимальная память (Max) — максимальный объём heap-памяти, доступный JVM ",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "bytes"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "max"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.fillOpacity",
+                      "value": 0
+                    },
+                    {
+                      "id": "custom.lineStyle",
+                      "value": {
+                        "dash": [
+                          10,
+                          10
+                        ],
+                        "fill": "dash"
+                      }
+                    },
+                    {
+                      "id": "custom.lineWidth",
+                      "value": 2
+                    },
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "dark-red",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 1
+            },
+            "id": 21,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(jvm_memory_used_bytes{host=\"$host\", area=\"heap\", instance=\"$instance\"})",
+                "hide": false,
+                "legendFormat": "used",
+                "range": true,
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(jvm_memory_committed_bytes{host=\"$host\", area=\"heap\", instance=\"$instance\"})",
+                "hide": false,
+                "legendFormat": "committed",
+                "range": true,
+                "refId": "B"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "exemplar": false,
+                "expr": "sum(jvm_memory_max_bytes{host=\"$host\", area=\"heap\", instance=\"$instance\"})",
+                "hide": false,
+                "legendFormat": "max",
+                "range": true,
+                "refId": "C"
+              }
+            ],
+            "title": "JVM Heap",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает состояние потоков JVM приложения monitoring-service:\n\nLive — текущее количество активных (живых) потоков JVM\n\nDaemon — количество потоков-демонов, работающих в фоновом режиме\n\nPeak — пиковое количество одновременно существовавших потоков с момента запуска JVM",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 0,
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 18,
+              "y": 1
+            },
+            "id": 22,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "jvm_threads_live{host=\"$host\", instance=\"$instance\"} or jvm_threads_live_threads{host=\"$host\", instance=~\"$instance\"}",
+                "legendFormat": "live",
+                "range": true,
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "jvm_threads_daemon{host=\"$host\", instance=\"$instance\"} or jvm_threads_daemon_threads{host=\"$host\", instance=\"$instance\"}",
+                "hide": false,
+                "legendFormat": "daemon",
+                "range": true,
+                "refId": "B"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "jvm_threads_peak{host=\"$host\", instance=\"$instance\"} or jvm_threads_peak_threads{host=\"$host\", instance=\"$instance\"}",
+                "hide": false,
+                "legendFormat": "peak",
+                "range": true,
+                "refId": "C"
+              }
+            ],
+            "title": "Threads",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Текущее использование CPU (%) для сервиса monitoring-service",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "decimals": 1,
+                "mappings": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 70
+                    },
+                    {
+                      "color": "dark-orange",
+                      "value": 80
+                    },
+                    {
+                      "color": "dark-red",
+                      "value": 90
+                    }
+                  ]
+                },
+                "unit": "percentunit"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 0,
+              "y": 221
+            },
+            "id": 23,
+            "maxDataPoints": 100,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "horizontal",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "text": {
+                "valueSize": 50
+              },
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "system_cpu_usage{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "CPU",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Значение системной средней нагрузки (load average) за 1 минуту для приложения monitoring-service",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "decimals": 1,
+                "mappings": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "none"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 3,
+              "y": 221
+            },
+            "id": 25,
+            "maxDataPoints": 100,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "horizontal",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "text": {
+                "valueSize": 50
+              },
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "system_load_average_1m{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "LA 1m",
+            "type": "stat"
+          }
+        ],
+        "title": "Health",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 1
+        },
+        "id": 1,
+        "panels": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Частота запуска задач discovery. Используется для оценки нагрузки и стабильности работы discovery-процессов.\n\n* ~0 — Discovery не работает (возможно, служба упала или настроена слишком редкая проверка).\n* 0.1–0.5 — Нормальная работа (например, 0.3 = 3 запуска каждые 10 секунд).\n* Резко выросло — Discovery начал запускаться чаще, чем обычно (проверьте настройки или логи на ошибки).\n* Упало до нуля — Служба перестала запускаться. (проверьте настройки, проверьте сервис).",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 2
+            },
+            "id": 2,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(irate(monitoringservice_scheduled_discoveries_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+                "legendFormat": "Discoveries",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Rate запуска discovery",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Среднее время выполнения операции выборки данных discovery из базы данных.\n\n* Низкое и стабильное значение времени выборки указывает на эффективную работу базы данных и быстродействие discovery-процессов.\n* Рост среднего времени может сигнализировать о проблемах с производительностью БД, увеличении нагрузки или узких местах в инфраструктуре.\n* Резкие скачки или нестабильность требуют дополнительного анализа и возможной оптимизации.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 6,
+              "y": 2
+            },
+            "id": 5,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_discovery_schedule_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / \nrate(monitoringservice_discovery_schedule_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Время выборки discovery из БД",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Среднее время выполнения процесса discovery.\n\n* Низкие значения (например, \u003c 1 сек) указывают на быстрое выполнение discovery, что считается нормальным.\n* Повышение значений может свидетельствовать о деградации производительности, задержках в ответах внешних сервисов или увеличении объёма обрабатываемых данных.\n* Резкие пики — повод проверить логи, метрики нагрузки и сетевые задержки.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 2
+            },
+            "id": 6,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_discovery_execute_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / rate(monitoringservice_discovery_execute_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Время выполнения discovery",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Среднее время, затрачиваемое на сохранение результатов discovery в базу данных.\n\n* Низкие значения (например, \u003c 0.5 сек) означают, что сохранение результатов работает эффективно и стабильно.\n* Рост среднего времени может указывать на проблемы с производительностью базы данных, блокировки, рост объёма записываемых данных или сетевые задержки.\n* Резкие скачки требуют анализа логов, состояния БД и метрик I/O.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": [
+                {
+                  "__systemRef": "hideSeriesFrom",
+                  "matcher": {
+                    "id": "byNames",
+                    "options": {
+                      "mode": "exclude",
+                      "names": [
+                        "Duration"
+                      ],
+                      "prefix": "All except:",
+                      "readOnly": true
+                    }
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.hideFrom",
+                      "value": {
+                        "legend": false,
+                        "tooltip": false,
+                        "viz": true
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 18,
+              "y": 2
+            },
+            "id": 7,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_discovery_save_results_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / rate(monitoringservice_discovery_save_results_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Время сохранения результатов discovery в БД",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Частота возникновения ошибок при выполнении процессов discovery.\n\n* Низкая или нулевая частота ошибок свидетельствует о корректной работе discovery-механизма.\n* Рост значения может указывать на сбои в логике discovery, нестабильность инфраструктуры.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Discoveries"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "dark-red",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 66
+            },
+            "id": 31,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(irate(monitoringservice_discovery_errors_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+                "legendFormat": "Discoveries",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Rate ошибок выполнения discovery",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Отображение текущей загрузки процесса discovery poller в процентах. Позволяет оценить, насколько эффективно используются ресурсы системы при сканировании и обновлении целевых объектов.\n\n* -60% - Нормальная рабочая нагрузка\n(Система справляется, есть запас ресурсов).\n* 60-80% - Повышенная нагрузка\n(Рекомендуется мониторить динамику, возможны замедления)\n* 80-100% - Критическая загрузка\n(Процесс не справляется, требуется вмешательство: оптимизация или масштабирование)",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 6,
+              "y": 66
+            },
+            "id": 50,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "monitoringservice_discovery_poller_load{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Загруженность discovery poller-а",
+            "type": "timeseries"
+          }
+        ],
+        "title": "Discoveries",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 2
+        },
+        "id": 3,
+        "panels": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает общее количество запусков и распределение по типам элементов.\n\n* Общее значение показывает, с какой частотой запускаются задачи опроса элементов в системе.\n* Разбивка по типам помогает понять, какие категории элементов нагружают систему больше всего.\n* Рост или аномалии в частоте запусков могут указывать на изменение нагрузки или проблемы в работе опроса.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 0,
+              "y": 75
+            },
+            "id": 4,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(irate(monitoringservice_scheduled_items_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+                "legendFormat": "Items",
+                "range": true,
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(irate(monitoringservice_scheduled_items_by_type_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) by (type)",
+                "hide": false,
+                "legendFormat": "Items: {{type}}",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Rate запуска опроса item",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает среднее время выполнения опроса элементов (item).\n\n- Низкие значения (например, \u003c 0.1 сек) указывают на быстрое выполнение опросов.\n- Рост среднего времени опроса может указывать на:\n  - замедление сети или системы;\n  - высокую нагрузку на сервис мониторинга;\n- Значения, превышающие допустимые пороги (например, \u003e 1–2 секунд), могут привести к задержкам в сборе метрик и потенциальным пропускам данных.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 75
+            },
+            "id": 26,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_item_poll_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / rate(monitoringservice_item_poll_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Время опроса item",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает среднее время выполнения запросов выборки items из базы данных.\n\n* Повышение значения может указывать на замедление выборки item'ов из БД — возможны проблемы с производительностью базы данных, увеличившаяся нагрузка или блокировки.\n* Стабильно низкие значения (например, \u003c 0.1 сек) обычно свидетельствуют о нормальной работе и быстром времени отклика.\n* Резкие скачки могут указывать на временные деградации или пиковые нагрузки, требующие дополнительного анализа.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 18,
+              "y": 75
+            },
+            "id": 8,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_item_schedule_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / rate(monitoringservice_item_schedule_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Время выборки item из БД",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Частота возникновения ошибок при выполнении опросов элементов(items).\n\n* Низкая или нулевая частота ошибок говорит о стабильной работе системы.\n* Повышенные значения у отдельных типов могут указывать на нестабильность конкретных источников данных.\n* Всплески требуют анализа причин: рост нагрузки, таймауты, ошибки сети или проблемы на стороне внешнего сервиса.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 12,
+              "x": 0,
+              "y": 83
+            },
+            "id": 30,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(irate(monitoringservice_item_errors_by_type_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) by (type)",
+                "legendFormat": "Errors: {{type}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Rate ошибок выполнения опроса item",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает текущую загруженность item poller-а.\n\n* Значение 100% означает, что poller постоянно занят обработкой item’ов без свободного времени — это может указывать на перегрузку.\n* Значения, приближенные к 0%, могут свидетельствовать о недозагрузке poller-а или простое.\n* Оптимальный уровень зависит от конфигурации и целей, но обычно 80–90% — допустимая загруженность, при которой poller работает эффективно, но с резервом по производительности.\n* Резкое увеличение загруженности может быть связано с ростом числа item’ов, замедлением БД, нехваткой потоков или другими проблемами производительности.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 83
+            },
+            "id": 49,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "monitoringservice_item_poller_load{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Загруженность item poller-а",
+            "type": "timeseries"
+          }
+        ],
+        "title": "Items",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 3
+        },
+        "id": 13,
+        "panels": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Отображает общее количество метрик, собираемых системой мониторинга.\n\n* Рост значения означает, что сервис собирает метрики чаще — увеличивается нагрузка на систему.\n* Падение значения может указывать на уменьшение активности сбора или возможные проблемы.\n* Резкие изменения требуют дополнительного анализа для выявления причин.\n",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 4
+            },
+            "id": 16,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(irate(monitoringservice_produced_metrics_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+                "legendFormat": "Metrics",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Rate собираемых метрик",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 6,
+              "y": 4
+            },
+            "id": 17,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_save_metrics_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) by (type)",
+                "legendFormat": "{{type}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Rate метрик, сохраняемых в БД",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает текущее количество метрик на двух ключевых этапах обработки.\nОжидает в буфере — количество метрик, находящихся в буфере ожидания перед записью в базу данных.\nВ процессе сохранения в БД — количество метрик, которые в данный момент обрабатываются.\n\n* Рост значения \"Ожидает в буфере\" может свидетельствовать о задержках в записи метрик, перегрузке или проблемах с базой данных.\n* Высокое значение \"В процессе сохранения в БД\" показывает интенсивную обработку метрик.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 4
+            },
+            "id": 15,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "monitoringservice_metric_buffer_size{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "Ожидает в буфере",
+                "range": true,
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "monitoringservice_processing_metric_values{host=\"$host\", instance=\"$instance\"}",
+                "hide": false,
+                "legendFormat": "В процессе сохранения в БД",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Количество сохраняемых метрик",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает среднее время, затрачиваемое на сохранение буфера метрик в базу данных.\n\n* Повышение среднего времени сохранения может свидетельствовать о росте нагрузки на базу данных или задержках в процессе записи.\n* Резкие скачки или тренды на увеличение требуют проверки производительности и стабильности системы.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 18,
+              "y": 4
+            },
+            "id": 37,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_flush_metrics_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / \nrate(monitoringservice_flush_metrics_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "Metrics",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Время сохранения буфера метрик в БД",
+            "type": "timeseries"
+          }
+        ],
+        "title": "Metrics",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "id": 51,
+        "panels": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает частоту  отправки сообщений с метриками сервисом monitoring-service в сервис problem-manager.\n\n* Повышение частоты отправки может указывать на рост количества проблем или событий, обрабатываемых системой.\n* Падение или остановка может сигнализировать о сбоях в отправке или проблемах с интеграцией problem-manager.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "dropped"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "dark-red",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 5
+            },
+            "id": 52,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_problem_manager_messages_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) by (type)",
+                "legendFormat": "{{type}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Rate отправки метрик на problem-manager",
+            "type": "timeseries"
+          }
+        ],
+        "title": "Problem Manager",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 5
+        },
+        "id": 32,
+        "panels": [
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает скорость обработки SNMP-запросов.\n\n* Повышение значения может указывать на рост SNMP-активности со стороны клиентов или систем мониторинга.\n* Падение может означать снижение нагрузки, проблемы с доступностью SNMP-агента или сети.\n* Значение, стабильно равное 0, может говорить о неработающем SNMP-сервисе, отсутствии трафика или ошибке сбора метрик.\n* Важно сопоставлять эти данные с логами и другими панелями (например, временем ответа или ошибками), чтобы понять причину отклонений.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "reqps"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Timeout"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#C4162A",
+                        "mode": "fixed"
+                      }
+                    },
+                    {
+                      "id": "custom.lineWidth",
+                      "value": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 6
+            },
+            "id": 39,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "rate(monitoringservice_snmp_request_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+                "legendFormat": "{{method}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "SNMP Engine: rate SNMP-запросов",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает среднюю длительность выполнения SNMP-запросов.\n\n* Повышенные значения могут свидетельствовать о деградации производительности SNMP-агента, проблемах с сетью или высоких задержках при обработке SNMP-запросов.\n* Стабильно низкие значения (в пределах нескольких миллисекунд) — нормальное поведение для исправно работающей системы.\n* Резкие скачки в графике могут быть индикатором перегрузки, временных сбоев или изменения конфигурации SNMP.\n* Полезно использовать вместе с панелью \"SNMP Engine: rate SNMP-запросов\" для выявления взаимосвязей между нагрузкой и временем обработки.\n",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 6,
+              "y": 6
+            },
+            "id": 43,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "mean",
+                  "lastNotNull",
+                  "max"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_snmp_request_duration_seconds_sum{host=\"$host\", method=\"GET\", instance=\"$instance\"}[$__rate_interval])) / \nsum(rate(monitoringservice_snmp_request_duration_seconds_count{host=\"$host\", method=\"GET\", instance=\"$instance\"}[$__rate_interval]))",
+                "hide": false,
+                "legendFormat": "GET",
+                "range": true,
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_snmp_request_duration_seconds_sum{host=\"$host\", method=\"WALK\", instance=\"$instance\"}[$__rate_interval])) / \nsum(rate(monitoringservice_snmp_request_duration_seconds_count{host=\"$host\", method=\"WALK\", instance=\"$instance\"}[$__rate_interval]))",
+                "hide": false,
+                "legendFormat": "WALK",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "SNMP Engine: длительность выполнения SNMP запросов",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает процент SNMP-запросов, завершившихся с ошибкой таймаута.\n\n* Рост процента таймаутов может указывать на проблемы с доступностью SNMP-агента, сетевые задержки, перегрузку системы или ошибки конфигурации.\n* Низкое или нулевое значение — ожидаемое поведение в стабильной среде.\n* Если значение превышает порог (например, \u003e5%), рекомендуется провести диагностику сети или SNMP-инфраструктуры.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Timeouts"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#C4162A",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 6
+            },
+            "id": 40,
+            "options": {
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "100 *\nsum(rate(monitoringservice_snmp_request_errors_total{host=\"$host\", reason=\"timeout\", instance=\"$instance\"}[$__rate_interval])) /\nsum(rate(monitoringservice_snmp_request_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+                "hide": false,
+                "legendFormat": "Timeouts",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "SNMP Engine: таймауты SNMP-запросов",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает среднее время ожидания получения блокировки в очереди.\n\n* Повышенные значения означают увеличение времени ожидания блокировок, что может быть следствием высокой конкуренции за ресурсы, синхронизационных проблем или общего роста нагрузки.\n* Низкие значения говорят о том, что очередь обрабатывается эффективно, без значительных задержек.\n* Резкие всплески могут указывать на \"бутылочные горлышки\" в обработке устройств или необходимости масштабирования.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 18,
+              "y": 6
+            },
+            "id": 48,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "mean",
+                  "lastNotNull",
+                  "max"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_device_accessor_queue_lock_wait_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) / \nsum(rate(monitoringservice_device_accessor_queue_lock_wait_duration_seconds_count{host=\"$host\", instance=~\"$instance\"}[$__rate_interval]))",
+                "hide": false,
+                "legendFormat": "ICMP",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Accessor Queue: время ожидания блокировки",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Панель отображает скорость обработки SNMP-пакетов.\n\n* Рост значения указывает на увеличение SNMP-трафика в соответствующем направлении (например, больше входящих или исходящих пакетов).\n*  Падение значения может означать снижение активности SNMP, проблемы с сетью или обработкой пакетов.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "reqps"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Timeout"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#C4162A",
+                        "mode": "fixed"
+                      }
+                    },
+                    {
+                      "id": "custom.lineWidth",
+                      "value": 2
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 30
+            },
+            "id": 45,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "mean"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_snmp4j_packets_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) by (direction)",
+                "legendFormat": "{{label_name}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "SNMP4j: rate SNMP-пакетов",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает текущее количество ожидающих обработки (pending) SNMP-запросов.\n\n* Рост количества pending-запросов может указывать на задержки в обработке, узкие места или перегрузку SNMP-агента или сервиса.\n* Низкие или нулевые значения — признак нормальной работы и своевременной обработки запросов.\n* Постоянно высокий уровень ожидающих запросов требует внимания для предотвращения деградации производительности или потери данных.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 6,
+              "y": 30
+            },
+            "id": 42,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "mean",
+                  "lastNotNull",
+                  "max"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "monitoringservice_pending_snmp_requests{host=\"$host\", instance=\"$instance\"}",
+                "legendFormat": "{{type}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "SNMP4j: количество pending SNMP запросов",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает процент SNMP-запросов, обработанных с таймаутом.\n\n* Увеличение процента таймаутов может свидетельствовать о проблемах с сетью, недоступности SNMP-агентов или перегрузке системы.\n* Низкие или близкие к нулю значения — признак стабильной работы.\n*  Высокий уровень таймаутов требует проверки конфигурации, состояния сети и SNMP-инфраструктуры.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 2,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Timeouts"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#C4162A",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 12,
+              "y": 30
+            },
+            "id": 46,
+            "options": {
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "100 *\nsum(rate(monitoringservice_snmp4j_request_timeouts_total{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) /\nsum(rate(monitoringservice_snmp4j_packets_total{host=\"$host\", instance=\"$instance\", direction=\"out\"}[$__rate_interval]))",
+                "hide": false,
+                "legendFormat": "Timeouts",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "SNMP4j: таймауты SNMP-запросов",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает максимальный зафиксированный размер очереди.\n\n* Рост максимального размера очереди может указывать на увеличение нагрузки или узкие места в обработке запросов.\n* Низкие значения свидетельствуют об эффективной обработке очереди без значительных накоплений.\n* Длительно высокий максимальный размер очереди может привести к задержкам и деградации производительности системы.\n",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "none"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 18,
+              "y": 30
+            },
+            "id": 47,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "mean",
+                  "lastNotNull",
+                  "max"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "monitoringservice_device_accessor_max_queue_size{host=\"$host\", instance=\"$instance\"}",
+                "hide": false,
+                "legendFormat": "ICMP",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Accessor Queue: максимальный размер очереди",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "victoriametrics-metrics-datasource",
+              "uid": "peeper-metrics"
+            },
+            "description": "Показывает среднее время выполнения ICMP-запросов.\n\n* Повышение средней длительности может указывать на ухудшение сетевой задержки или проблемы с обработкой ICMP-запросов.\n* Низкие и стабильные значения свидетельствуют о нормальном состоянии сети и своевременной обработке запросов.\n* Всплески длительности могут сигнализировать о временных сбоях, перегрузках или проблемах с маршрутизацией.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 6,
+              "x": 0,
+              "y": 38
+            },
+            "id": 44,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "mean",
+                  "lastNotNull",
+                  "max"
+                ],
+                "displayMode": "table",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PF75C52D90C771BE5"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(monitoringservice_icmp_request_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval])) / \nsum(rate(monitoringservice_icmp_request_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+                "hide": false,
+                "legendFormat": "Duration",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Длительность ICMP-запросов",
+            "type": "timeseries"
+          }
+        ],
+        "title": "Adapters",
+        "type": "row"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 6
+        },
+        "id": 27,
+        "panels": [],
+        "title": "Redis Cache",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "peeper-metrics"
+        },
+        "description": "Показывает скорость операций чтения (decode). Позволяет отслеживать нагрузку на систему декодирования и выявлять объекты с наибольшим числом операций чтения.\n\n* Рост общей скорости чтения может свидетельствовать об увеличении нагрузки на сервис или усилении активности клиентов.\n* Если наблюдается значительный вклад отдельных объектов, это может указывать на узкие места, требующие оптимизации.\n* Снижение скорости чтения ниже ожидаемого уровня может говорить о проблемах в работе компонента декодирования или уменьшении пользовательской активности.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "rps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 7
+        },
+        "id": 35,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PF75C52D90C771BE5"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(monitoring_service_redisson_codec_total{host=\"$host\", instance=\"$instance\", operation=\"decode\"}[$__rate_interval]))",
+            "hide": false,
+            "legendFormat": "ALL",
+            "range": true,
+            "refId": "D"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PF75C52D90C771BE5"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(monitoring_service_redisson_codec_total{host=\"$host\", instance=\"$instance\", operation=\"decode\"}[$__rate_interval])) by (object)",
+            "hide": false,
+            "legendFormat": "{{object}}",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Read rate",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "peeper-metrics"
+        },
+        "description": "Показывает скорость операций записи.\n\n* Увеличение общей скорости записи свидетельствует о возрастании нагрузки на систему кодирования.\n* Высокая активность по отдельным объектам, может указывать на узкие места, требующие оптимизации.\n* Падение скорости записи может сигнализировать о снижении активности или проблемах в компонентах записи/кодирования.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "min": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "wps"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 7
+        },
+        "id": 36,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PF75C52D90C771BE5"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(monitoring_service_redisson_codec_total{host=\"$host\", instance=\"$instance\", operation=\"encode\"}[$__rate_interval]))",
+            "hide": false,
+            "legendFormat": "ALL",
+            "range": true,
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PF75C52D90C771BE5"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(monitoring_service_redisson_codec_total{host=\"$host\", instance=\"$instance\", operation=\"encode\"}[$__rate_interval])) by (object)",
+            "legendFormat": "{{object}}",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Write rate",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 15
+        },
+        "id": 10,
+        "panels": [],
+        "title": "Misc",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "peeper-metrics"
+        },
+        "description": "Показывает частоту вычисления шаблонных выражений.\n* Рост значения говорит об увеличении нагрузки на подсистему вычисления шаблонных выражений, что может влиять на общую производительность сервиса.\n* Резкие скачки могут указывать на всплески активности или потенциальные проблемы с оптимизацией шаблонов.\n* Стабильно низкие значения показывают относительно малую активность и низкую нагрузку в данном компоненте.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 16
+        },
+        "id": 12,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PF75C52D90C771BE5"
+            },
+            "editorMode": "code",
+            "expr": "sum(irate(monitoringservice_expression_eval_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval]))",
+            "legendFormat": "Expressions",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Rate вычисления шаблонных выражений",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "peeper-metrics"
+        },
+        "description": "Показывает среднее время выполнения шаблонных выражений.\n\n* Увеличение среднего времени вычисления может указывать на рост сложности шаблонов или снижение производительности системы.\n* Стабильное или снижающееся время говорит о нормальной работе и оптимальной нагрузке.\n* Резкие скачки времени выполнения могут свидетельствовать о проблемах с конкретными выражениями или изменениях в инфраструктуре.",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green"
+                }
+              ]
+            },
+            "unit": "s"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 16
+        },
+        "id": 11,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "max",
+              "mean"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "12.0.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PF75C52D90C771BE5"
+            },
+            "editorMode": "code",
+            "expr": "rate(monitoringservice_expression_eval_duration_seconds_sum{host=\"$host\", instance=\"$instance\"}[$__rate_interval]) / rate(monitoringservice_expression_eval_duration_seconds_count{host=\"$host\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "Duration",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Время вычисления шаблонных выражений",
+        "type": "timeseries"
+      }
+    ],
+    "preload": false,
+    "refresh": "5s",
+    "schemaVersion": 41,
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "text": "Zolotovskiy-ECCM",
+            "value": "Zolotovskiy-ECCM"
+          },
+          "definition": "label_values({app=\"eccm\"},host)",
+          "label": "host",
+          "name": "host",
+          "options": [],
+          "query": {
+            "qryType": 1,
+            "query": "label_values({app=\"eccm\"},host)",
+            "refId": "VariableQueryEditor-VariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "172.21.8.8:8088",
+            "value": "172.21.8.8:8088"
+          },
+          "datasource": {
+            "type": "victoriametrics-metrics-datasource",
+            "uid": "peeper-metrics"
+          },
+          "definition": "label_values({application=\"monitoring-service\", host=\"$host\"},instance)",
+          "includeAll": false,
+          "label": "Instance",
+          "name": "instance",
+          "options": [],
+          "query": {
+            "qryType": 1,
+            "query": "label_values({application=\"monitoring-service\", host=\"$host\"},instance)",
+            "refId": "VariableQueryEditor-VariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "monitoring-service",
+    "uid": "monitoring-service"
+  }
+}

@@ -1,0 +1,48 @@
+# agent.yaml (Исправленная версия)
+
+global:
+  # Как часто vmagent будет опрашивать цели
+  scrape_interval: 15s
+
+scrape_configs:
+  # Эта секция отвечает за автоматическое обнаружение сервисов в Docker
+  - job_name: 'peeper-autodiscovery'
+    # Включаем магию обнаружения сервисов Docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        
+    # Правила, которые фильтруют и настраивают найденные контейнеры
+    relabel_configs:
+      # --- ЭТАП 1: ФИЛЬТРАЦИЯ ---
+      
+      # Отбираем только те контейнеры, у которых есть метка 'ru.eltex-co.metrics.job'.
+      # Это главное правило, чтобы не собирать метрики со всех подряд.
+      - source_labels: [__meta_docker_container_label_ru_eltex_co_metrics_job]
+        action: keep
+        regex: .+
+
+      # --- ЭТАП 2: ФОРМИРОВАНИЕ МЕТОК ---
+      
+      # Устанавливаем итоговую метку 'job' из значения метки '...metrics.job'.
+      - source_labels: [__meta_docker_container_label_ru_eltex_co_metrics_job]
+        target_label: job
+
+      # Устанавливаем путь для сбора метрик (например, /metrics) из значения метки '...metrics.path'.
+      # Эта метка становится специальной меткой '__metrics_path__', которую vmagent использует при построении URL.
+      - source_labels: [__meta_docker_container_label_ru_eltex_co_metrics_path]
+        target_label: __metrics_path__
+
+      # --- ЭТАП 3: ФОРМИРОВАНИЕ АДРЕСА (САМОЕ ВАЖНОЕ) ---
+
+      # Заменяем адрес для сбора метрик.
+      # Берем IP-адрес контейнера (группа 1 в regex) и приклеиваем к нему порт,
+      # взятый из метки '...metrics.port' (группа 2 в regex).
+      - source_labels: [__address__, __meta_docker_container_label_ru_eltex_co_metrics_port]
+        action: replace
+        # Это регулярное выражение говорит: "Найди всё до двоеточия (это IP),
+        # затем проигнорируй двоеточие и цифры после него (старый порт),
+        # а затем найди цифры во второй переменной (новый порт)".
+        regex: '([^:]+)(?::\d+)?;(\d+)'
+        # Собираем новый адрес: IP-адрес (из группы 1) + ":" + порт (из группы 2)
+        replacement: '${1}:${2}'
+        target_label: __address__

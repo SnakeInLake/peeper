@@ -1,0 +1,8 @@
+---
+services:
+  peeper-agent:
+    environment:
+      - "FOLDER_NAME=NAICE"
+      - "FOLDER_UID=naice"
+    volumes:
+      - "./naice/dashboards/:/opt/dashboards/"

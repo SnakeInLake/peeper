@@ -1,0 +1,13 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "DashboardFolder",
+  "metadata": {
+    "name": "eccm-services"
+  },
+  "spec": {
+    "orgId": 1,
+    "parentUid": "eccm",
+    "title": "ECCM Services",
+    "uid": "eccm-services"
+  }
+}

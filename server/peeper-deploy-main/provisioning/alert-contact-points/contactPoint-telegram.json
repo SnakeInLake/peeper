@@ -1,0 +1,21 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "AlertContactPoint",
+  "metadata": {
+    "name": "telegram"
+  },
+  "spec": {
+    "disableResolveMessage": false,
+    "name": "Telegram",
+    "settings": {
+      "bottoken": "5736347410:AAE_0wBiTh8TmO1FkY2INA9KuPNoNCKth2E",
+      "chatid": "-1001585566665\n",
+      "disable_notification": false,
+      "disable_web_page_preview": false,
+      "message": "{{ template \"telegram.message\" .}}",
+      "protect_content": false
+    },
+    "type": "telegram",
+    "uid": "telegram"
+  }
+}

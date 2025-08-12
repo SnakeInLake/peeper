@@ -1,0 +1,137 @@
+---
+services:
+  eltex-mercury:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-mercury"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-mercury"
+      ru.eltex-co.metrics.path: "mercury/prometheus"
+      ru.eltex-co.metrics.port: "6564"
+
+  eltex-ngw:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-ngw"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-ngw"
+      ru.eltex-co.metrics.path: "actuator/prometheus"
+      ru.eltex-co.metrics.port: "8040"
+
+  eltex-apb:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-apb"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-apb"
+      ru.eltex-co.metrics.path: "apb/api/metrics"
+      ru.eltex-co.metrics.port: "8090"
+
+  eltex-portal:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-portal"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-portal"
+      ru.eltex-co.metrics.path: "eltex_portal/api/metrics"
+      ru.eltex-co.metrics.port: "9000"
+
+  eltex-portal-constructor:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-portal-constructor"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-portal-constructor"
+      ru.eltex-co.metrics.path: "epadmin/actuator/prometheus"
+      ru.eltex-co.metrics.port: "9001"
+
+  eltex-radius:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-radius"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-radius"
+      ru.eltex-co.metrics.path: "metrics"
+      ru.eltex-co.metrics.port: "9812"
+
+  eltex-jobs:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-jobs"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-jobs"
+      ru.eltex-co.metrics.path: "actuator/prometheus"
+      ru.eltex-co.metrics.port: "9696"
+
+  eltex-bruce:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-bruce"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-bruce"
+      ru.eltex-co.metrics.path: "actuator/prometheus"
+      ru.eltex-co.metrics.port: "8008"
+
+  eltex-radius-nbi:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-radius-nbi"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-radius-nbi"
+      ru.eltex-co.metrics.port: "9010"
+
+  eltex-wifi-cab:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-wifi-cab"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-wifi-cab"
+      ru.eltex-co.metrics.path: "actuator/prometheus"
+      ru.eltex-co.metrics.port: "8085"
+
+  eltex-pcrf:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-pcrf"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-pcrf"
+      ru.eltex-co.metrics.path: "metrics/prometheus"
+      ru.eltex-co.metrics.port: "7070"
+
+  eltex-ems-core:
+    networks:
+      internal:
+    labels:
+      ru.eltex-co.image.title: "eltex-ems-core"
+      ru.eltex-co.image.vendor: "ELTEX"
+      ru.eltex-co.metrics.job: "softwlc-ems"
+      ru.eltex-co.metrics.path: "metrics"
+      ru.eltex-co.metrics.port: "9091"
+
+networks:
+  internal:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.bridge.name: "internal"
+    # enable_ipv4: true
+    enable_ipv6: false
+    external: false
+    internal: true
+    ipam:
+      driver: "default"
+      config:
+        - subnet: "172.21.0.0/20"
+          ip_range: "172.21.8.0/21"
+          gateway: "172.21.0.1"
+    name: "internal"

@@ -1,0 +1,11 @@
+apiVersion: 1
+providers:
+  - name: 'default'
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+       # Указываем путь ВНУТРИ КОНТЕЙНЕРА, где будут лежать json-файлы дашбордов
+      path: /etc/grafana/provisioning/dashboard_files

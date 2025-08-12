@@ -1,0 +1,11 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "AlertNotificationTemplate",
+  "metadata": {
+    "name": "telegram.alert"
+  },
+  "spec": {
+    "name": "telegram.alert",
+    "template": "{{ define \"telegram.alert\" }}{{ range . }}\n\u003cb\u003e{{ or .Annotations.message .Labels.alertname }}\u003c/b\u003e\n{{ range .Annotations.SortedPairs }}\n{{ if ne .Name \"message\" }}{{ .Value }}{{ end }}\n{{ end }}{{ with .PanelURL }}\u003ca href=\"{{ . }}\"\u003eChart\u003c/a\u003e {{ end }}{{ with .DashboardURL }}@\u003ca href=\"{{ . }}\"\u003eDashboard\u003c/a\u003e {{ end }}{{ with .GeneratorURL }} \u003ca href=\"{{ . }}\"\u003eEdit\u003c/a\u003e {{ end }}{{ with .SilenceURL }} \u003ca href=\"{{ . }}\"\u003eMute\u003c/a\u003e {{ end }}\n{{ end }}{{ end }}"
+  }
+}

@@ -1,0 +1,1050 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "AlertRuleGroup",
+  "metadata": {
+    "name": "system.1m"
+  },
+  "spec": {
+    "folderUid": "system",
+    "interval": 60,
+    "rules": [
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "28239",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается превышение порога 90% нагрузки на CPU! Возможна деградация сервиса!"
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (cpu_usage_user{cpu=\"cpu-total\"})",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Загрузка CPU"
+            },
+            "refId": "Загрузка CPU",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      90
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Загрузка CPU",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 1,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Загрузка CPU больше 90%",
+        "uid": "ee5mogwjhqsjka",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "61860",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается превышение порога 90% использования RAM!"
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (mem_used_percent)",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Процент использования RAM"
+            },
+            "refId": "Процент использования RAM",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      90
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Процент использования RAM",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 2,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Использование RAM больше 90%",
+        "uid": "de5mvivg0pmv4b",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "61863",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается превышение порога 90% использования SWAP!"
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (swap_used_percent)",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Процент использования SWAP"
+            },
+            "refId": "Процент использования SWAP",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      90
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Процент использования SWAP",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 3,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Использование SWAP больше 90%",
+        "uid": "de5tei46bzpq8a",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "61866",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается превышение порога 90% использования RootFS!"
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (disk_used_percent{path=\"/\"})",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Процент использования RootFS"
+            },
+            "refId": "Процент использования RootFS",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      90
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Процент использования RootFS",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 4,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Использование RootFS больше 90%",
+        "uid": "de5tfszrvw8w0a",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "61867",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается превышение порога 90% использования IOwait!"
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (cpu_usage_iowait{cpu=\"cpu-total\"})",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Значение IOwait"
+            },
+            "refId": "Значение IOwait",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      90
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Значение IOwait",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 5,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Значение IOwait больше 90%",
+        "uid": "ce5tghold7t34c",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "61862",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается появление Zombie процессов!"
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (processes_zombies)",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Количество zombie"
+            },
+            "refId": "Количество zombie",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "C"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Количество zombie",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 6,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Обнаружены Zombie процессы",
+        "uid": "aegtib71bcao0e",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "linux",
+          "__panelId__": "62042",
+          "summary": "На сервере \u003cb\u003e{{ $labels.host }}\u003c/b\u003e наблюдается превышение порога 90% максимального числа Дескрипторов! Возможна деградация сервиса!"
+        },
+        "condition": "Trigger_value",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "sum by (host) (linux_sysctl_fs_file\\-max)",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Descriptors_limit"
+            },
+            "refId": "Descriptors_limit",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "datasource": {
+                "type": "victoriametrics-metrics-datasource",
+                "uid": "peeper-metrics"
+              },
+              "editorMode": "code",
+              "expr": "sum by (host) (linux_sysctl_fs_file\\-nr)",
+              "instant": true,
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": false,
+              "refId": "Descriptors_count"
+            },
+            "refId": "Descriptors_count",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "$Descriptors_count \u003e $Descriptors_limit * 0.9",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Trigger_value",
+              "type": "math"
+            },
+            "refId": "Trigger_value",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 7,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Файловые дескрипторы исчерпаны более чем на 90%",
+        "uid": "begtltea3cr9cf",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "summary": "Сервер \u003cb\u003e{{ $labels.host }}\u003c/b\u003e 3 минуты не присылал метрику System Uptime. Возможно он недоступен."
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "timestamp(system_uptime)",
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": true,
+              "refId": "Timestamp"
+            },
+            "refId": "Timestamp",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "datasource": {
+                "type": "victoriametrics-metrics-datasource",
+                "uid": "peeper-metrics"
+              },
+              "editorMode": "code",
+              "expr": "time()",
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": true,
+              "refId": "Time"
+            },
+            "refId": "Time",
+            "relativeTimeRange": {
+              "from": 600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Timestamp",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "LastTimestamp",
+              "type": "reduce"
+            },
+            "refId": "LastTimestamp",
+            "relativeTimeRange": {}
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Time",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "LastTime",
+              "type": "reduce"
+            },
+            "refId": "LastTime",
+            "relativeTimeRange": {}
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "${LastTime} - ${LastTimestamp}",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Время недоступности",
+              "type": "math"
+            },
+            "refId": "Время недоступности",
+            "relativeTimeRange": {}
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      180,
+                      14400
+                    ],
+                    "type": "within_range"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Время недоступности",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {}
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 8,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Сервер недоступен",
+        "uid": "aer3xborlq5moc",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      },
+      {
+        "annotations": {
+          "__dashboardUid__": "docker",
+          "__panelId__": "1",
+          "summary": "Сервер \u003cb\u003e{{ $labels.host }}\u003c/b\u003e 1 минуту не присылал метрики контейнера \u003cb\u003e{{ $labels.container_name }}\u003c/b\u003e. Возможно он упал."
+        },
+        "condition": "Значение триггера",
+        "data": [
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "editorMode": "code",
+              "expr": "timestamp(docker_container_status_uptime_ns{container_name!=\"peeper-provision\"})",
+              "intervalMs": 1000,
+              "legendFormat": "{{container_name}}",
+              "maxDataPoints": 43200,
+              "range": true,
+              "refId": "Timestamp docker uptime"
+            },
+            "refId": "Timestamp docker uptime",
+            "relativeTimeRange": {
+              "from": 3600
+            }
+          },
+          {
+            "datasourceUid": "peeper-metrics",
+            "model": {
+              "datasource": {
+                "type": "victoriametrics-metrics-datasource",
+                "uid": "peeper-metrics"
+              },
+              "editorMode": "code",
+              "expr": "time()",
+              "intervalMs": 1000,
+              "legendFormat": "__auto",
+              "maxDataPoints": 43200,
+              "range": true,
+              "refId": "Time"
+            },
+            "refId": "Time",
+            "relativeTimeRange": {
+              "from": 3600
+            }
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": [
+                      "B"
+                    ]
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "last"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Timestamp docker uptime",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "Last timestamp docker uptime",
+              "type": "reduce"
+            },
+            "refId": "Last timestamp docker uptime",
+            "relativeTimeRange": {}
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Time",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "reducer": "last",
+              "refId": "Last time",
+              "type": "reduce"
+            },
+            "refId": "Last time",
+            "relativeTimeRange": {}
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      0,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "${Last time} - ${Last timestamp docker uptime}",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Difference",
+              "type": "math"
+            },
+            "refId": "Difference",
+            "relativeTimeRange": {}
+          },
+          {
+            "datasourceUid": "__expr__",
+            "model": {
+              "conditions": [
+                {
+                  "evaluator": {
+                    "params": [
+                      60,
+                      0
+                    ],
+                    "type": "gt"
+                  },
+                  "operator": {
+                    "type": "and"
+                  },
+                  "query": {
+                    "params": []
+                  },
+                  "reducer": {
+                    "params": [],
+                    "type": "avg"
+                  },
+                  "type": "query"
+                }
+              ],
+              "datasource": {
+                "name": "Expression",
+                "type": "__expr__",
+                "uid": "__expr__"
+              },
+              "expression": "Difference",
+              "intervalMs": 1000,
+              "maxDataPoints": 43200,
+              "refId": "Значение триггера",
+              "type": "threshold"
+            },
+            "refId": "Значение триггера",
+            "relativeTimeRange": {}
+          }
+        ],
+        "execErrState": "Alerting",
+        "folderUID": "system",
+        "for": "1m0s",
+        "id": 9,
+        "noDataState": "Alerting",
+        "notification_settings": {
+          "group_by": null,
+          "mute_time_intervals": null,
+          "receiver": "Telegram"
+        },
+        "orgID": 1,
+        "ruleGroup": "1m",
+        "title": "Docker контейнер недоступен",
+        "uid": "eestvd0engoowc",
+        "updated": "2025-07-30T14:53:45.000+07:00"
+      }
+    ],
+    "title": "1m"
+  }
+}

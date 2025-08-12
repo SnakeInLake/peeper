@@ -1,0 +1,169 @@
+---
+name: "peeper"
+
+x-logging: &logging
+  driver: "json-file"
+  options:
+    compress: "true"
+    max-file: "5"
+    max-size: "50m"
+services:
+#  peeper-agent:
+ #   image: "${PEEPER_REGISTRY}/peeper/peeper-agent:${PEEPER_VERSION}"
+  #  container_name: "peeper-agent"
+   # hostname: "peeper-agent"
+    #environment:
+     # DOCKER_HOST: "${HOSTNAME}"
+      #DOCKER_SOCKET: "${DOCKER_SOCKET}"
+#      PEEPER_HOST: "${PEEPER_HOST}"
+ #     PEEPER_PORT: "${PEEPER_PORT}"
+  #    PEEPER_USER: "${PEEPER_USER}"
+   #   PEEPER_PASSWORD: "${PEEPER_PASSWORD}"
+    #  TZ: "${TIMEZONE}"
+    # Временное поле, пока не решится вопрос с автогенерацией сертификатов
+#    extra_hosts:
+ #     - "${PEEPER_HOST}:${PEEPER_IP}"
+  #  logging: &logging
+   #   driver: "json-file"
+   #   options:
+    #    compress: "true"
+     #   max-file: "5"
+      #  max-size: "50m"
+#    networks:
+ #     - external
+  #    - internal
+   # ports:
+    #  - "8429:8429"
+#    volumes:
+ #     - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
+  #    - "peeper-agent-data:/data:rw"
+   # user: "root:${DOCKER_GID}"
+    #restart: "unless-stopped"
+
+  vmagent:
+    build: ./vmagent-custom 
+    container_name: "peeper-agent"
+    hostname: "peeper-agent"
+    environment:
+      PEEPER_HOST: "${PEEPER_HOST}"
+      PEEPER_PORT: "${PEEPER_PORT}"
+      PEEPER_USER: "${PEEPER_USER}"
+      PEEPER_PASSWORD: "${PEEPER_PASSWORD}"
+      DOCKER_SOCKET: "${DOCKER_SOCKET}"
+      DOCKER_GID: "${DOCKER_GID}"
+      TZ: "${TIMEZONE}"
+    extra_hosts:
+      - "${PEEPER_HOST}:${PEEPER_IP}"
+    logging: *logging 
+    networks:
+      external:
+      internal:
+        aliases:
+          - peeper-agent
+    ports:
+      - "8429:8429" # PUSH-порт для Telegraf и UI
+    volumes:
+      - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
+      - "peeper-vmagent-data:/data:rw" 
+    user: "root:${DOCKER_GID}"
+    restart: "unless-stopped"
+
+
+
+  peeper-provision:
+    image: "${PEEPER_REGISTRY}/peeper/peeper-provision:${PEEPER_VERSION}"
+    container_name: "peeper-provision"
+    hostname: "peeper-provision"
+    environment:
+      PEEPER_HOST: "${PEEPER_HOST}"
+      PEEPER_PORT: "${PEEPER_PORT}"
+      TZ: "${TIMEZONE}"
+    extra_hosts:
+      - "${PEEPER_HOST}:${PEEPER_IP}"
+    logging: *logging
+    networks:
+      - external
+
+    volumes:
+      - "peeper-vmagent-data:/vmagent-data:rw"
+      - "./peeper-token:/peeper-token:rw"
+      - "./provisioning:/provisioning:ro"
+      - "./telegram-bot-token:/telegram-bot-token:rw"
+      - "./telegram-chat-id:/telegram-chat-id:rw"
+      - "peeper-provision-data:/data:rw"
+
+
+  peeper-telegraf:
+    image: "${PEEPER_REGISTRY}/peeper/peeper-telegraf:${PEEPER_VERSION}"
+    container_name: "peeper-telegraf"
+    hostname: "peeper-telegraf"
+    depends_on:
+      - "vmagent"
+    environment:
+      DOCKER_HOST: "${HOSTNAME}"
+      DOCKER_SOCKET: "${DOCKER_SOCKET}"
+      HOST_ETC: "/hostfs/etc"
+      HOST_MOUNT_PREFIX: "/hostfs"
+      HOST_PROC: "/hostfs/proc"
+      HOST_RUN: "/hostfs/run"
+      HOST_SYS: "/hostfs/sys"
+      HOST_VAR: "/hostfs/var"
+      TZ: "${TIMEZONE}"
+    logging: *logging
+    networks:
+      - internal
+    volumes:
+      - "/:/hostfs:ro"
+      - "/run/udev:/run/udev:ro"
+#      - "./telegraf-fixed.conf:/etc/telegraf/telegraf.conf:ro"
+      - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
+    privileged: true
+    user: "telegraf:${DOCKER_GID}"
+    restart: "unless-stopped"
+
+networks:
+  external:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.bridge.name: "external"
+    enable_ipv4: true
+    enable_ipv6: false
+    external: ${PEEPER_EXTERNAL_MODE}
+    internal: false
+    ipam:
+      driver: "default"
+      config:
+        - subnet: "172.20.0.0/20"
+          ip_range: "172.20.8.0/21"
+          gateway: "172.20.0.1"
+    name: "external"
+  internal:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.bridge.name: "internal"
+    enable_ipv4: true
+    enable_ipv6: false
+    external: ${PEEPER_EXTERNAL_MODE}
+    internal: true
+    ipam:
+      driver: "default"
+      config:
+        - subnet: "172.21.0.0/20"
+          ip_range: "172.21.8.0/21"
+          gateway: "172.21.0.1"
+    name: "internal"
+
+volumes:
+  # Старый volume от peeper-agent больше не нужен, удаляем его
+#  peeper-agent-data:
+ #    driver: "local"
+  #   external: false
+   #  name: "peeper-agent-data"
+  peeper-provision-data:
+    driver: "local"
+    external: false
+    name: "peeper-provision-data"
+  peeper-vmagent-data:
+    driver: "local"
+    external: false
+    name: "peeper-vmagent-data"

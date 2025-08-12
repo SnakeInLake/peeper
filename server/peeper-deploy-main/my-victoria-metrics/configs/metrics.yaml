@@ -1,0 +1,8 @@
+global:
+  scrape_interval: "10s"
+  scrape_timeout: "5s"
+  external_labels:
+    host: "%{DOCKER_HOST}"
+
+scrape_config_files:
+  - "/etc/victoria-metrics/configs/*.yaml" # Путь будет внутри контейнера

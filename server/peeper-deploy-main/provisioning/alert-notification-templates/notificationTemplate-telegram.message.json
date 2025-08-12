@@ -1,0 +1,11 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "AlertNotificationTemplate",
+  "metadata": {
+    "name": "telegram.message"
+  },
+  "spec": {
+    "name": "telegram.message",
+    "template": "{{ define \"telegram.message\" }}\n{{ if gt (len .Alerts.Firing) 0 }}\n\u003cb\u003eАвария!!!\u003c/b\u003e\n{{ template \"telegram.alert\" .Alerts.Firing }}\n{{ if gt (len .Alerts.Resolved) 0 }}\n\n{{ end }}{{ end }}\n{{ if gt (len .Alerts.Resolved) 0 }}\n\u003cb\u003eНормализация\u003c/b\u003e\n{{ template \"telegram.alert\" .Alerts.Resolved }}\n{{ end }}{{ end }}"
+  }
+}

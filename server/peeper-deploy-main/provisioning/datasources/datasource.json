@@ -1,0 +1,17 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "Datasource",
+  "metadata": {
+    "name": "peeper-metrics"
+  },
+  "spec": {
+    "name": "peeper-metrics",
+    "type": "prometheus",
+    "uid": "peeper-metrics",
+    "url": "http://peeper-metrics:8428",
+    "access": "proxy",
+    "isDefault": true,
+    "editable": false,
+    "jsonData": {}
+  }
+}

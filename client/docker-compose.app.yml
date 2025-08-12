@@ -1,0 +1,19 @@
+
+# docker-compose.app.yml
+version: "3.8"
+
+services:
+  my-first-app-service:
+    container_name: "my-first-app"
+    build: ./my-first-app-src
+    networks:
+      - internal_network # Используем логическое имя сети
+    labels:
+      ru.eltex-co.metrics.job: "student-app"
+      ru.eltex-co.metrics.path: "metrics"
+      ru.eltex-co.metrics.port: "9191"
+
+networks:
+  internal_network: # Даем логическое имя
+    external: true  # Указываем, что она внешняя
+    name: "internal" # Указываем ее реальное физическое имя в Docker

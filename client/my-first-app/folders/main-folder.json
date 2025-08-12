@@ -1,0 +1,11 @@
+{
+  "apiVersion": "grizzly.grafana.com/v1alpha1",
+  "kind": "DashboardFolder",
+  "metadata": {
+    "name": "my-first-app"
+  },
+  "spec": {
+    "title": "My First App",
+    "uid": "my-first-app"
+  }
+}
