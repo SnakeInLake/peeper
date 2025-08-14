@@ -1,5 +1,5 @@
 ---
-name: "peeper"
+name: "stud"
 
 x-logging: &logging
   driver: "json-file"
@@ -9,18 +9,17 @@ x-logging: &logging
     max-size: "50m"
 
 services:
-  # --- НАША НОВАЯ "ЧИСТАЯ" GRAFANA ---
-  peeper-grafana:
+  stud-grafana:
     image: "grafana/grafana:9.5.1"
-    container_name: "peeper-grafana"
-    hostname: "peeper-grafana"
+    container_name: "stud-grafana"
+    hostname: "stud-grafana"
     restart: "unless-stopped"
     networks:
       - internal
       - external
     volumes:
       # Том для хранения настроек Grafana (пользователи, алерты и т.д.)
-      - "peeper-grafana-data:/var/lib/grafana:rw"
+      - "stud-grafana-data:/var/lib/grafana:rw"
       # Том для автоматического создания источников данных
       - "./my-grafana-provisioning/datasources:/etc/grafana/provisioning/datasources:ro"
       # Том с файлом-инструкцией, где искать дашборды
@@ -28,17 +27,15 @@ services:
       # Том с самими файлами дашбордов
       - "./my-grafana-provisioning/dashboard_files:/etc/grafana/provisioning/dashboard_files:ro"
     environment:
-      GF_SECURITY_ADMIN_USER: "${PEEPER_USERNAME}"
-      GF_SECURITY_ADMIN_PASSWORD: "${PEEPER_PASSWORD}"
-      GF_SERVER_ROOT_URL: "http://peeper-grafana:3000"
+      GF_SECURITY_ADMIN_USER: "${STUD_USERNAME}"
+      GF_SECURITY_ADMIN_PASSWORD: "${STUD_PASSWORD}"
+      GF_SERVER_ROOT_URL: "http://stud-grafana:3000"
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       TZ: "${TIMEZONE}"
       # Указываем Grafana, какой плагин нужно скачать и установить при старте.
       GF_INSTALL_PLUGINS: "victoriametrics-metrics-datasource"
-  
       # Разрешаем загрузку неподписанных плагинов (хорошая практика)
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: "victoriametrics-metrics-datasource"
-
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/api/health"]
       interval: "10s"
@@ -61,10 +58,12 @@ services:
       interval: "5s"
       timeout: "5s"
       retries: "10"
-    user: "root" # <-- Нужно для доступа к сокету Docker
+    user: "root"
+    privileged: true           
     restart: "unless-stopped"
     networks:
       - internal
+      - external
     ports:
       - "8428:8428"
     volumes:
@@ -72,76 +71,56 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./my-victoria-metrics/configs/metrics.yaml:/etc/victoria-metrics/metrics.yaml:ro"
       - "./my-victoria-metrics/configs/docker.yaml:/etc/victoria-metrics/configs/docker.yaml:ro"
-    
     command:
       - '--storageDataPath=/victoria-metrics-data'
       - '--retentionPeriod=30d'
     # Этот флаг теперь указывает на правильный путь внутри контейнера
       - '--promscrape.config=/etc/victoria-metrics/metrics.yaml'
 
-#  peeper-metrics:
- #   image: "${PEEPER_REGISTRY}/peeper/peeper-metrics:${PEEPER_VERSION}"
-  #  container_name: "peeper-metrics"
-   # hostname: "peeper-metrics"
-#    restart: "unless-stopped"
- #   networks:
-  #    - internal
-   # volumes:
-    #  - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
-     # - "peeper-metrics-data:/data:rw"
-#    user: "root:${DOCKER_GID}"
- #   healthcheck:
-  #    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8428/-/healthy"]
-   #   interval: "5s"
-    #  timeout: "5s"
-     # retries: "10"
-    #logging: *logging
-    #environment:
-     # DOCKER_HOST: "${HOSTNAME}"
-      #DOCKER_SOCKET: "${DOCKER_SOCKET}"
-#      RETENTION_PERIOD: "${RETENTION_PERIOD}"
- #     TZ: "${TIMEZONE}"
-
-  peeper-proxy:
-    image: "${PEEPER_REGISTRY}/peeper/peeper-proxy:${PEEPER_VERSION}"
-    container_name: "peeper-proxy"
-    hostname: "peeper-proxy"
+  my-proxy:
+    build: ./my-haproxy
+#    image: my-haproxy:latest # <-- Используем наш собранный вручную образ 
+    container_name: "my-proxy"
+    hostname: "my-proxy"
     restart: "unless-stopped"
     depends_on:
       my-victoria-metrics:
+        condition: "service_healthy"
+      stud-grafana: # Добавим зависимость от Графаны
         condition: "service_healthy"
     networks:
       - external
       - internal
     ports:
-      - "0.0.0.0:${PEEPER_PORT}:443"
+      # Пробрасываем 80 и 443 порт. ${STUD_PORT} скорее всего 443
+      - "0.0.0.0:80:80" 
+      - "0.0.0.0:${STUD_PORT}:443"
     volumes:
-      - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro" 
+      # Пути оставляем те же, но убедимся, что конфиг наш
+      - "./my-haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro" 
       - "./certificates/crt:/usr/local/etc/ssl/private:ro"
+      - "./my-haproxy/entrypoint.sh:/docker-entrypoint.sh:ro"
     logging: *logging
     environment:
       TZ: "${TIMEZONE}"
+    # Healthcheck можно упростить или оставить
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
-      interval: "5s"
-      timeout: "5s"
-      retries: "10"
- 
-
-
-
+      test: ["CMD", "curl", "-k", "-f", "https://127.0.0.1/health"]
+      interval: "30s"
+      timeout: "10s"
+      retries: "3"
 
   my-own-server-provisioner:
     container_name: "my-own-server-provisioner"
     build: ./my-own-server-provisioner 
     depends_on:
-      peeper-grafana:
+      stud-grafana:
         condition: "service_healthy"
     networks:
       - internal
     restart: "on-failure"
     environment:
-      GRAFANA_TOKEN: "${PEEPER_TOKEN}"
+      GRAFANA_TOKEN: "${STUD_TOKEN}"
     volumes:
       # Монтируем ОРИГИНАЛЬНУЮ папку с системными дашбордами
       - "./provisioning/dashboards/system:/dashboards/system:ro"
@@ -149,34 +128,10 @@ services:
  #   command: -c "echo 'Container is in sleep mode. Attach with docker exec.' && sleep infinity"    
 #      - "./test-dashboard.json:/dashboards/test-dashboard.json:ro"
 
-    
-#  peeper-provision:
- #   image: "${PEEPER_REGISTRY}/peeper/peeper-provision:${PEEPER_VERSION}"
-  #  container_name: "peeper-provision"
-   # hostname: "peeper-provision"
-   # depends_on:
-    #  peeper-grafana:
-     #   condition: "service_healthy"
-  #    peeper-proxy:
-   #     condition: "service_healthy"
-  #  environment:
-   #   PEEPER_PORT: "${PEEPER_PORT}"
-    #  TZ: "${TIMEZONE}"
- #   extra_hosts:
-  #    - "host.docker.internal:host-gateway"
-  #  logging: *logging
-   # networks:
-#      - external
- #   volumes:
-  #    - "./provisioning:/provisioning:ro"
-   #   - "peeper-provision-data:/data:rw"
-
-
-
-  peeper-telegraf:
-    image: "${PEEPER_REGISTRY}/peeper/peeper-telegraf:${PEEPER_VERSION}"
-    container_name: "peeper-telegraf"
-    hostname: "peeper-telegraf"
+  my-telegraf-agent: 
+    image: "telegraf:1.29-alpine"
+    container_name: "my-telegraf-agent"
+    hostname: "my-telegraf-agent"
     restart: "unless-stopped"
     depends_on:
       my-victoria-metrics:
@@ -184,12 +139,12 @@ services:
     networks:
       - internal
     volumes:
-      - "./telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+      - "./my-telegraf-config/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
       - "/:/hostfs:ro"
       - "/run/udev:/run/udev:ro"
       - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
-    privileged: true
-    user: "telegraf:${DOCKER_GID}"
+    privileged: true 
+    user: "telegraf:${DOCKER_GID}" 
     logging: *logging
     environment:
       AGENT_HOST: "my-victoria-metrics"
@@ -204,43 +159,6 @@ services:
       HOST_VAR: "/hostfs/var"
       TZ: "${TIMEZONE}"
 
-  #my-telegraf-agent:
-   # image: "telegraf:1.28-alpine" 
-    #container_name: "my-telegraf-agent"
- #   hostname: "my-telegraf-agent"
-  #  restart: "unless-stopped"
-   # depends_on:
-    #  my-victoria-metrics: 
-     #   condition: "service_healthy"
-  
-    #volumes:
-     # - "./my-telegraf-config/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
-      #- "/:/hostfs:ro"
-    #  - "/run/udev:/run/udev:ro" 
-     # - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
-  
- #   privileged: true
-  #  user: "telegraf:${DOCKER_GID}"
-   # networks:
-    #  - internal
-    #logging: *logging
-  
-#    environment:
- #     DOCKER_HOST: "${HOSTNAME}" 
-  #    DOCKER_SOCKET: "${DOCKER_SOCKET}" 
-   # 
-    #  AGENT_HOST: "my-victoria-metrics" 
-     # AGENT_PORT: "8428"
-    
- #     HOST_ETC: "/hostfs/etc"
-  #    HOST_MOUNT_PREFIX: "/hostfs"
-   #   HOST_PROC: "/hostfs/proc"
-     # HOST_RUN: "/hostfs/run"
-    #  HOST_SYS: "/hostfs/sys"
-     # HOST_VAR: "/hostfs/var"
-    #  TZ: "${TIMEZONE}"
-
-
 networks:
   external:
     name: "external"
@@ -251,11 +169,11 @@ networks:
     internal: true
 
 volumes:
-  peeper-grafana-data:
-    name: "peeper-grafana-data"
-  peeper-metrics-data:
-    name: "peeper-metrics-data"
-  peeper-provision-data:
-    name: "peeper-provision-data"
+  stud-grafana-data:
+    name: "stud-grafana-data"
+  stud-metrics-data:
+    name: "stud-metrics-data"
+  stud-provision-data:
+    name: "stud-provision-data"
   my-victoria-metrics-data:
     name: "my-victoria-metrics-data"

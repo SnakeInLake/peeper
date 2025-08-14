@@ -11542,8 +11542,8 @@
         {
           "allowCustomValue": false,
           "current": {
-            "text": "peeper-proxy",
-            "value": "peeper-proxy"
+            "text": "my-proxy",
+            "value": "my-proxy"
           },
           "definition": "label_values(haproxy_process_nbproc{host=\"$host\"},container)",
           "label": "Container",

@@ -1,0 +1,146 @@
+# Имя всего проекта. Используется для именования сетей и томов.
+name: "stud"
+
+# YAML-"якорь": определяем блок конфигурации один раз, чтобы переиспользовать его.
+x-logging: &logging
+  # Драйвер логов. 'json-file' - стандартный, позволяет задавать лимиты.
+  driver: "json-file"
+  options:
+    # Включаем сжатие старых лог-файлов.
+    compress: "true"
+    # Максимальное количество файлов ротации.
+    max-file: "5"
+    # Максимальный размер одного файла перед ротацией.
+    max-size: "50m"
+
+# Главная секция, где описываются все сервисы (контейнеры).
+services:
+  # Сервис №1: кастомный агент-сборщик метрик.
+  stud-agent:
+    # Инструкция Docker'у: не искать готовый образ, а собрать его из папки 
+    build: ./vmagent-custom
+    # Жестко заданное имя контейнера для удобства обращения 
+    container_name: "stud-agent"
+    # Имя хоста внутри контейнера.
+    hostname: "stud-agent"
+    # Переменные окружения, которые передаются внутрь контейнера из файла .env.
+    # Они будут прочитаны стартовым скриптом entrypoint.sh для конфигурации vmagent.
+    environment:
+      STUD_HOST: "${STUD_HOST}"
+      STUD_PORT: "${STUD_PORT}"
+      PEEPER_USER: "${PEEPER_USER}"
+      PEEPER_PASSWORD: "${PEEPER_PASSWORD}"
+      DOCKER_SOCKET: "${DOCKER_SOCKET}"
+      DOCKER_GID: "${DOCKER_GID}"
+      TZ: "${TIMEZONE}"
+    # Добавляет запись в /etc/hosts внутри контейнера (для решения проблем с DNS).
+    extra_hosts:
+      - "${STUD_HOST}:${STUD_IP}"
+    # Применяем ранее определенный якорь &logging.
+    logging: *logging
+    # Подключаем контейнер к двум виртуальным сетям.
+    networks:
+      - external
+      - internal
+    # "Пробрасываем" порт изнутри контейнера наружу, на хост-машину.
+    ports:
+      - "8429:8429" # PUSH-порт для Telegraf и UI
+    # Подключаем "флешки" к контейнеру.
+    volumes:
+      # Пробрасываем Docker Socket, чтобы vmagent мог использовать автообнаружение.
+      - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro" # 'ro' - read-only
+      # Подключаем именованный том для хранения временных данных. 'rw' - read-write.
+      - "stud-vmagent-data:/data:rw"
+    # Запускаем процесс от имени root, но добавляем его в группу docker для доступа к сокету.
+    user: "root:${DOCKER_GID}"
+    # Политика перезапуска: всегда перезапускать, если упал, кроме ручной остановки.
+    restart: "unless-stopped"
+
+  # Сервис №2: Наш кастомный скрипт для настройки Grafana.
+  stud-provision:
+    build: ./provision-custom
+    container_name: "stud-provision"
+    environment:
+      GRAFANA_URL: "https://${STUD_HOST}"
+      GRAFANA_TOKEN: "${GRAFANA_SA_TOKEN}"
+    volumes:
+      # Пробрасываем папку, которую готовит setup.sh, чтобы скрипт внутри нашел дашборды.
+      - "./provisioning:/provisioning:ro"
+    # Перезапускать, только если скрипт завершился с ошибкой.
+    restart: "on-failure"
+
+  # Сервис №3: Сборщик системных метрик.
+  stud-telegraf:
+    # Используем официальный, "чистый" образ Telegraf.
+    image: telegraf:latest
+    container_name: "stud-telegraf"
+    hostname: "stud-telegraf"
+    # Директива зависимости: не запускать этот контейнер, пока stud-agent не будет запущен.
+    depends_on:
+      - "stud-agent"
+    user: "telegraf:${DOCKER_GID}"
+    networks:
+      # Подключаем только к внутренней сети для общения с агентом.
+      - internal
+    volumes:
+      # Ключевой момент: подменяем стандартный конфиг внутри образа на наш собственный.
+      - "./telegraf-custom/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+      - "${DOCKER_SOCKET}:${DOCKER_SOCKET}:ro"
+      # Пробрасываем корневую файловую систему хоста для сбора некоторых метрик.
+      - "/:/hostfs:ro"
+      - "/run/udev:/run/udev:ro"
+    environment:
+      HOSTNAME: "${HOSTNAME}"
+      DOCKER_SOCKET: "${DOCKER_SOCKET}"
+      DOCKER_GID: "${DOCKER_GID}"
+    restart: "unless-stopped"
+
+# Секция, где мы описываем наши виртуальные сети.
+networks:
+  external:
+    # Тип сети. 'bridge' - стандартная виртуальная сеть.
+    driver: "bridge"
+    driver_opts:
+      # Явно задаем имя сетевого интерфейса на хост-машине.
+      com.docker.network.bridge.name: "external"
+    enable_ipv4: true
+    enable_ipv6: false
+    # Указываем, что сеть должна создаваться/управляться этим compose-файлом (если false).
+    external: ${STUD_EXTERNAL_MODE}
+    internal: false
+    # Секция управления IP-адресами.
+    ipam:
+      driver: "default"
+      config:
+        # Жестко задаем подсеть, диапазон и шлюз.
+        - subnet: "172.20.0.0/20"
+          ip_range: "172.20.8.0/21"
+          gateway: "172.20.0.1"
+    name: "external"
+  internal:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.bridge.name: "internal"
+    enable_ipv4: true
+    enable_ipv6: false
+    external: ${STUD_EXTERNAL_MODE}
+    # Эта сеть изолирована от внешнего мира.
+    internal: true
+    ipam:
+      driver: "default"
+      config:
+        - subnet: "172.21.0.0/20"
+          ip_range: "172.21.8.0/21"
+          gateway: "172.21.0.1"
+    name: "internal"
+
+# Секция, где мы описываем наши "именованные тома" (named volumes).
+volumes:
+  stud-provision-data:
+    driver: "local"
+    external: false
+    name: "stud-provision-data"
+  stud-vmagent-data:
+    driver: "local"
+    external: false
+    name: "stud-vmagent-data"

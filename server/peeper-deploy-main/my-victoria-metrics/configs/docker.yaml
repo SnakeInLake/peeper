@@ -1,18 +1,54 @@
----
-- job_name: "docker"
+# --- Название задачи для группировки в интерфейсе VictoriaMetrics
+- job_name: "docker-services"
+  
+  # --- Секция обнаружения: "Где искать цели?"
   docker_sd_configs:
-    - host: "unix://%{DOCKER_SOCKET}"
+    # --- Мы ищем цели через Docker Service Discovery (sd), обращаясь к Docker API через его сокет
+    - host: "unix:///var/run/docker.sock"
+  
+  # --- Секция обработки: "Что делать с найденными целями?"
+  # Это самый важный блок. Он выполняется по шагам, сверху вниз, для каждой найденной цели.
   relabel_configs:
-    - source_labels: [ "__meta_docker_container_label_ru_eltex_co_metrics_job" ]
-      regex: ".+"
-      action: "keep"
-    - source_labels: [ "__meta_docker_container_name" ]
-      target_label: "container"
-      regex: "/?(.+)"
-    - source_labels: [ "__meta_docker_network_ip", "__meta_docker_container_label_ru_eltex_co_metrics_port" ]
+    
+    # --- ШАГ 1: ФИЛЬТРАЦИЯ (ВХОДНОЙ КОНТРОЛЬ)
+    # Цель: Отбросить все контейнеры, которые нам не нужно мониторить.
+    # --- Из какой метки берем информацию
+    - source_labels: [__meta_docker_container_label_metrics_scrape]
+      # --- Что делаем: "ОСТАВЛЯЕМ" (keep) только те цели, которые соответствуют правилу. Остальные выбрасываем.
+      action: keep
+      # --- Правило: Значение в source_labels должно быть равно "true".
+      regex: "true"
+
+    # --- ШАГ 2: ФОРМИРОВАНИЕ АДРЕСА
+    # Цель: Собрать правильный адрес для сбора метрик (IP:PORT), перезаписав дефолтный.
+    # --- Берем информацию из двух меток: IP-адреса контейнера в сети и порта для метрик из его Docker-метки.
+    - source_labels: [__meta_docker_network_ip, __meta_docker_container_label_metrics_port]
+      # --- Как их соединить: через двоеточие.
       separator: ":"
-      target_label: "__address__"
-    - source_labels: [ "__meta_docker_container_label_ru_eltex_co_metrics_path" ]
-      target_label: "__metrics_path__"
-    - regex: "__meta_docker_container_label_ru_eltex_co_metrics_(.+)"
-      action: "labelmap"
+      # --- Куда записать результат: в специальную метку __address__, которую VictoriaMetrics использует для скрейпинга.
+      target_label: __address__
+
+    # --- ШАГ 3: УСТАНОВКА ПУТИ
+    # Цель: Указать, по какому URL-пути нужно запрашивать метрики.
+    # --- Берем информацию из Docker-метки 'metrics_path'.
+    - source_labels: [__meta_docker_container_label_metrics_path]
+      # --- Куда записать: в специальную метку __metrics_path__.
+      target_label: __metrics_path__
+      
+    # --- ШАГ 4: НАСТРОЙКА ОТОБРАЖЕНИЯ (ИМЯ)
+    # Цель: Сделать метку 'instance' красивой и читаемой вместо IP-адреса.
+    # --- Берем имя контейнера (например, "/my-proxy").
+    - source_labels: [__meta_docker_container_name]
+      # --- Куда записать: в метку 'instance', которая видна в интерфейсе.
+      target_label: instance
+      # --- Правило обработки: найти слэш в начале (/) и "захватить" всё, что после него.
+      regex: "/(.*)"
+      # --- Чем заменить: тем, что "захватили" на предыдущем шаге ($1). "/my-proxy" превращается в "my-proxy".
+      replacement: "$1"
+
+    # --- ШАГ 5: НАСТРОЙКА ОТОБРАЖЕНИЯ (ЗАДАЧА)
+    # Цель: Присвоить таргету правильную группу 'job', чтобы он не назывался "docker-services".
+    # --- Берем имя задачи из Docker-метки 'metrics_job'.
+    - source_labels: [__meta_docker_container_label_metrics_job]
+      # --- Куда записать: в метку 'job'.
+      target_label: job

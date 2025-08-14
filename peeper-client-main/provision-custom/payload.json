@@ -1,0 +1,40 @@
+{
+  "dashboard": {
+    "title": "My First App Dashboard",
+    "uid": "my-first-app-dashboard",
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Student Random Gauge",
+        "type": "timeseries",
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "peeper-metrics"
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "expr": "student_gauge_random{job=\"student-app\"}",
+            "legendFormat": "{{app}}"
+          }
+        ]
+      },
+      {
+        "title": "Student Total Counter",
+        "type": "timeseries",
+        "datasource": {
+          "type": "victoriametrics-metrics-datasource",
+          "uid": "peeper-metrics"
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+        "targets": [
+          {
+            "expr": "student_counter_total{job=\"student-app\"}",
+            "legendFormat": "{{app}}"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}
